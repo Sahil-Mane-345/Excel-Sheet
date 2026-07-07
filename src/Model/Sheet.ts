@@ -64,62 +64,190 @@ export class Sheet{
         
     }
 
-    render(){
-        console.log("render");
-        const firstRow = Math.floor(this.scrollY / this.cellHeight);
-        const firstCol = Math.floor(this.scrollX / this.cellWidth);
-        const visibleRows = Math.floor(this.canvas.height / this.cellHeight);
-        const visibleCols = Math.floor(this.canvas.width / this.cellWidth);
-        this.context?.clearRect(0,0,this.canvas.width, this.canvas.height);
-        const columnOffset = this.scrollX % this.cellWidth;
-        const rowOffset = this.scrollY % this.cellHeight;
-        
-        for(var i = firstRow; i < firstRow + visibleRows + 1; i++){
-            for(var j = firstCol ; j < firstCol + visibleCols + 1; j++){
-                if(!this.context){
-                    throw new Error("Context is null");
-                }
+    private render(): void {
 
-                
-                
-                this.context.lineWidth = 1;
-                this.context.strokeStyle = "#cdcdcd";
-                
-                
-                const x = this.rowHeaderWidth + (j - firstCol) * this.cellWidth - columnOffset;
-                
-                const y = this.columnHeaderHeight + (i - firstRow) * this.cellHeight - rowOffset;
-                if( i === this.selectedRow && j === this.selectedCol){
-                    this.context.lineWidth = 2;
-                    this.context.strokeStyle = "#090080";
-                }
-                this.context?.strokeRect(x, y, this.cellWidth, this.cellHeight);
-                const cell = this.getCell(i , j);
+        if (!this.context) return;
 
-                if(cell){
-                    this.context.textAlign = "left";
-                    this.context.textBaseline = "middle";
-                    this.context.fillStyle = "black";
-                    this.context.font = "14px Arial";
+        const viewport = this.getViewport();
 
-                    this.context.fillText(cell.value.substring(0,15), x + 5, y + 20);
-                }
-            }
-        }
+        this.context.clearRect(
+            0,
+            0,
+            this.canvas.width,
+            this.canvas.height
+        );
+
+        this.renderGrid(viewport);
+        this.renderCellContents(viewport);
+
         this.renderRowHeaders(
-            firstRow,
-            visibleRows,
-            rowOffset
+            viewport.firstRow,
+            viewport.visibleRows,
+            viewport.rowOffset
         );
 
         this.renderColumnHeaders(
-            firstCol,
-            visibleCols,
-            columnOffset
+            viewport.firstCol,
+            viewport.visibleCols,
+            viewport.columnOffset
         );
 
         this.renderCorner();
+
+        this.renderSelection(viewport);
     }
+
+    private getViewport() {
+
+        const firstRow = Math.floor(this.scrollY / this.cellHeight);
+        const firstCol = Math.floor(this.scrollX / this.cellWidth);
+
+        const visibleRows = Math.floor(
+            this.canvas.height / this.cellHeight
+        );
+
+        const visibleCols = Math.floor(
+            this.canvas.width / this.cellWidth
+        );
+
+        return {
+
+            firstRow,
+            firstCol,
+
+            visibleRows,
+            visibleCols,
+
+            rowOffset: this.scrollY % this.cellHeight,
+            columnOffset: this.scrollX % this.cellWidth
+
+        };
+    }
+
+    private renderGrid(viewport: ReturnType<typeof this.getViewport>) {
+
+        if (!this.context) return;
+
+        for (
+            let row = viewport.firstRow;
+            row <= viewport.firstRow + viewport.visibleRows;
+            row++
+        ) {
+
+            for (
+                let col = viewport.firstCol;
+                col <= viewport.firstCol + viewport.visibleCols;
+                col++
+            ) {
+
+                const x =
+                    this.rowHeaderWidth +
+                    (col - viewport.firstCol) * this.cellWidth -
+                    viewport.columnOffset;
+
+                const y =
+                    this.columnHeaderHeight +
+                    (row - viewport.firstRow) * this.cellHeight -
+                    viewport.rowOffset;
+
+                this.context.strokeStyle = "#cdcdcd";
+                this.context.lineWidth = 1;
+
+                this.context.strokeRect(
+                    x,
+                    y,
+                    this.cellWidth,
+                    this.cellHeight
+                );
+            }
+        }
+    }
+
+    private renderCellContents(
+    viewport: ReturnType<typeof this.getViewport>
+    ) {
+
+        if (!this.context) return;
+
+        this.context.fillStyle = "black";
+        this.context.font = "14px Arial";
+        this.context.textAlign = "left";
+        this.context.textBaseline = "middle";
+
+        for (
+            let row = viewport.firstRow;
+            row <= viewport.firstRow + viewport.visibleRows;
+            row++
+        ) {
+
+            for (
+                let col = viewport.firstCol;
+                col <= viewport.firstCol + viewport.visibleCols;
+                col++
+            ) {
+
+                const cell = this.getCell(row, col);
+
+                if (!cell) continue;
+
+                const x =
+                    this.rowHeaderWidth +
+                    (col - viewport.firstCol) * this.cellWidth -
+                    viewport.columnOffset;
+
+                const y =
+                    this.columnHeaderHeight +
+                    (row - viewport.firstRow) * this.cellHeight -
+                    viewport.rowOffset;
+
+                this.context.fillText(
+                    cell.value.substring(0, 15),
+                    x + 5,
+                    y + this.cellHeight / 2
+                );
+            }
+        }
+    }
+
+    private renderSelection(
+            viewport: ReturnType<typeof this.getViewport>
+        ) {
+
+            if (!this.context) return;
+
+            if (
+                this.selectedRow < viewport.firstRow ||
+                this.selectedRow >
+                    viewport.firstRow + viewport.visibleRows ||
+                this.selectedCol < viewport.firstCol ||
+                this.selectedCol >
+                    viewport.firstCol + viewport.visibleCols
+            ) {
+                return;
+            }
+
+            const x =
+                this.rowHeaderWidth +
+                (this.selectedCol - viewport.firstCol) *
+                    this.cellWidth -
+                viewport.columnOffset;
+
+            const y =
+                this.columnHeaderHeight +
+                (this.selectedRow - viewport.firstRow) *
+                    this.cellHeight -
+                viewport.rowOffset;
+
+            this.context.strokeStyle = "#090080";
+            this.context.lineWidth = 2;
+
+            this.context.strokeRect(
+                x,
+                y,
+                this.cellWidth,
+                this.cellHeight
+            );
+        }
 
     handleCallSelection(event:MouseEvent){
         const rect = this.canvas.getBoundingClientRect();
@@ -144,9 +272,15 @@ export class Sheet{
         const label = document.getElementById("cell-input-label") as HTMLLabelElement;
 
         label.textContent = `${this.selectedRow} : ${this.getColumnName(this.selectedCol)}`;
-        const cell = this.getCell(this.selectedRow, this.selectedCol);
+
+        const cell = this.getCell(
+            this.selectedRow,
+            this.selectedCol
+        );
 
         input.value = cell ? cell.value : "";
+
+        input.focus();
         this.render();
     }
 

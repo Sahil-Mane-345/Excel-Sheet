@@ -1,56 +1,47 @@
 // src/Grid/SelectionManager.ts
 
-import { CellRange } from "../Model/CellRange";
+export enum SelectionType {
+    Cell,
+    Range,
+    Row,
+    Column,
+    All
+}
+
+export class Selection {
+
+    constructor(
+        public type: SelectionType,
+        public startRow: number,
+        public startColumn: number,
+        public endRow: number,
+        public endColumn: number
+    ) {}
+
+}
 
 export class SelectionManager {
 
-    private selectedRow = 0;
-
-    private selectedColumn = 0;
-
-    private selectedRange: CellRange | null = null;
-
-    private selectedRows = new Set<number>();
-
-    private selectedColumns = new Set<number>();
+    private selection = new Selection(
+        SelectionType.Cell,
+        0,
+        0,
+        0,
+        0
+    );
 
     public selectCell(
         row: number,
         column: number
     ): void {
 
-        this.selectedRow = row;
-        this.selectedColumn = column;
-
-        this.selectedRange = null;
-
-        this.selectedRows.clear();
-
-        this.selectedColumns.clear();
-
-    }
-
-    public selectRow(row: number): void {
-
-        this.selectedRows.clear();
-
-        this.selectedColumns.clear();
-
-        this.selectedRange = null;
-
-        this.selectedRows.add(row);
-
-    }
-
-    public selectColumn(column: number): void {
-
-        this.selectedRows.clear();
-
-        this.selectedColumns.clear();
-
-        this.selectedRange = null;
-
-        this.selectedColumns.add(column);
+        this.selection = new Selection(
+            SelectionType.Cell,
+            row,
+            column,
+            row,
+            column
+        );
 
     }
 
@@ -61,7 +52,8 @@ export class SelectionManager {
         endColumn: number
     ): void {
 
-        this.selectedRange = new CellRange(
+        this.selection = new Selection(
+            SelectionType.Range,
             startRow,
             startColumn,
             endRow,
@@ -70,44 +62,82 @@ export class SelectionManager {
 
     }
 
+    public selectRows(
+        startRow: number,
+        endRow: number,
+        totalColumns: number
+    ): void {
+
+        this.selection = new Selection(
+            SelectionType.Row,
+            startRow,
+            0,
+            endRow,
+            totalColumns - 1
+        );
+
+    }
+
+    public selectColumns(
+        startColumn: number,
+        endColumn: number,
+        totalRows: number
+    ): void {
+
+        this.selection = new Selection(
+            SelectionType.Column,
+            0,
+            startColumn,
+            totalRows - 1,
+            endColumn
+        );
+
+    }
+
+    public selectAll(
+        totalRows: number,
+        totalColumns: number
+    ): void {
+
+        this.selection = new Selection(
+            SelectionType.All,
+            0,
+            0,
+            totalRows - 1,
+            totalColumns - 1
+        );
+
+    }
+
     public clear(): void {
 
-        this.selectedRows.clear();
+        this.selection = new Selection(
+            SelectionType.Cell,
+            0,
+            0,
+            0,
+            0
+        );
 
-        this.selectedColumns.clear();
+    }
 
-        this.selectedRange = null;
+    public getSelection(): Selection {
+
+        return this.selection;
 
     }
 
     public getSelectedRow(): number {
 
-        return this.selectedRow;
+        return this.selection.startRow;
 
     }
 
     public getSelectedColumn(): number {
 
-        return this.selectedColumn;
-
-    }
-
-    public getSelectedRange(): CellRange | null {
-
-        return this.selectedRange;
-
-    }
-
-    public getSelectedRows(): Set<number> {
-
-        return this.selectedRows;
-
-    }
-
-    public getSelectedColumns(): Set<number> {
-
-        return this.selectedColumns;
+        return this.selection.startColumn;
 
     }
 
 }
+

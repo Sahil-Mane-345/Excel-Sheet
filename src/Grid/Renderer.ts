@@ -1,7 +1,7 @@
 // src/Grid/Renderer.ts
 
 import { CellEditor } from "./CellEditor";
-import { SelectionManager } from "./SelectionManager";
+import { SelectionManager, SelectionType } from "./SelectionManager";
 import { Viewport } from "./Viewport";
 import { Helpers } from "../Utils/Helpers";
 
@@ -40,6 +40,8 @@ export class Renderer {
             this.canvas.height
         );
 
+        this.drawSelection(viewport);
+
         this.drawGrid(viewport);
 
         this.drawCells(viewport);
@@ -50,7 +52,6 @@ export class Renderer {
 
         this.drawCorner();
 
-        this.drawSelection(viewport);
 
     }
 
@@ -283,23 +284,191 @@ export class Renderer {
 
     }
 
-    private drawSelection(
-        viewport: ReturnType<Viewport["getViewport"]>
-    ): void {
+    
+private drawSelection(
+    viewport: ReturnType<Viewport["getViewport"]>
+): void {
 
-        const row =
-            this.selectionManager.getSelectedRow();
+    const selection =
+        this.selectionManager.getSelection();
 
-        const column =
-            this.selectionManager.getSelectedColumn();
+    switch (selection.type) {
+
+        case SelectionType.Cell:
+        case SelectionType.Range:
+
+            this.drawCellRangeSelection(
+                viewport
+            );
+
+            break;
+
+        case SelectionType.Row:
+
+            this.drawRowSelection(
+                viewport
+            );
+
+            break;
+
+        case SelectionType.Column:
+
+            this.drawColumnSelection(
+                viewport
+            );
+
+            break;
+
+        case SelectionType.All:
+
+            this.drawAllSelection(
+                viewport
+            );
+
+            break;
+
+    }
+
+}
+
+private drawAllSelection(
+    viewport: ReturnType<Viewport["getViewport"]>
+): void {
+
+    this.context.fillStyle = "#e9f5ee";
+
+    for (
+        let row = viewport.firstRow;
+        row <= viewport.firstRow + viewport.visibleRows;
+        row++
+    ) {
+
+        const y =
+            this.viewport.getColumnHeaderHeight() +
+            (row - viewport.firstRow) *
+            this.viewport.getDefaultRowHeight() -
+            viewport.rowOffset;
+
+        this.context.fillRect(
+
+            this.viewport.getRowHeaderWidth(),
+
+            y,
+
+            this.canvas.width -
+            this.viewport.getRowHeaderWidth(),
+
+            this.viewport.getDefaultRowHeight()
+
+        );
+
+    }
+
+    for (
+        let row = viewport.firstRow;
+        row <= viewport.firstRow + viewport.visibleRows;
+        row++
+    ) {
+
+        const y =
+            this.viewport.getColumnHeaderHeight() +
+            (row - viewport.firstRow) *
+            this.viewport.getDefaultRowHeight() -
+            viewport.rowOffset;
+
+        this.context.fillStyle = "#d0ead7";
+
+        this.context.fillRect(
+
+            0,
+
+            y,
+
+            this.viewport.getRowHeaderWidth(),
+
+            this.viewport.getDefaultRowHeight()
+
+        );
+
+        this.context.fillStyle = "#e9f5ee";
+
+    }
+
+    for (
+        let column = viewport.firstColumn;
+        column <= viewport.firstColumn + viewport.visibleColumns;
+        column++
+    ) {
+
+        const x =
+            this.viewport.getRowHeaderWidth() +
+            (column - viewport.firstColumn) *
+            this.viewport.getDefaultColumnWidth() -
+            viewport.columnOffset;
+
+        this.context.fillStyle = "#d0ead7";
+
+        this.context.fillRect(
+
+            x,
+
+            0,
+
+            this.viewport.getDefaultColumnWidth(),
+
+            this.viewport.getColumnHeaderHeight()
+
+        );
+
+    }
+
+    this.context.fillStyle = "#d0ead7";
+
+    this.context.fillRect(
+
+        0,
+
+        0,
+
+        this.viewport.getRowHeaderWidth(),
+
+        this.viewport.getColumnHeaderHeight()
+
+    );
+
+}
+
+
+private drawColumnSelection(
+    viewport: ReturnType<Viewport["getViewport"]>
+): void {
+
+    const selection =
+        this.selectionManager.getSelection();
+
+    const startColumn = Math.min(
+        selection.startColumn,
+        selection.endColumn
+    );
+
+    const endColumn = Math.max(
+        selection.startColumn,
+        selection.endColumn
+    );
+
+    this.context.fillStyle = "#e9f5ee";
+
+    for (
+        let column = startColumn;
+        column <= endColumn;
+        column++
+    ) {
 
         if (
-            row < viewport.firstRow ||
-            row > viewport.firstRow + viewport.visibleRows ||
             column < viewport.firstColumn ||
             column > viewport.firstColumn + viewport.visibleColumns
         ) {
-            return;
+            continue;
         }
 
         const x =
@@ -308,23 +477,275 @@ export class Renderer {
             this.viewport.getDefaultColumnWidth() -
             viewport.columnOffset;
 
+        this.context.fillRect(
+            x,
+            this.viewport.getColumnHeaderHeight(),
+            this.viewport.getDefaultColumnWidth(),
+            this.canvas.height -
+            this.viewport.getColumnHeaderHeight()
+        );
+
+        this.context.fillStyle = "#d0ead7";
+
+        this.context.fillRect(
+            x,
+            0,
+            this.viewport.getDefaultColumnWidth(),
+            this.viewport.getColumnHeaderHeight()
+        );
+
+        this.context.fillStyle = "#e9f5ee";
+
+    }
+
+}
+
+
+
+
+    private drawCellRangeSelection(
+        viewport: ReturnType<Viewport["getViewport"]>
+    ): void {
+
+        const selection =
+            this.selectionManager.getSelection();
+
+        const startRow =
+            Math.min(
+                selection.startRow,
+                selection.endRow
+            );
+
+        const endRow =
+            Math.max(
+                selection.startRow,
+                selection.endRow
+            );
+
+        const startColumn =
+            Math.min(
+                selection.startColumn,
+                selection.endColumn
+            );
+
+        const endColumn =
+            Math.max(
+                selection.startColumn,
+                selection.endColumn
+            );
+
+        this.context.fillStyle = "#e9f5ee";
+
+        for (
+            let row = startRow;
+            row <= endRow;
+            row++
+        ) {
+
+            if (
+                row < viewport.firstRow ||
+                row > viewport.firstRow + viewport.visibleRows
+            ) {
+                continue;
+            }
+
+            for (
+                let column = startColumn;
+                column <= endColumn;
+                column++
+            ) {
+
+                if (
+                    column < viewport.firstColumn ||
+                    column > viewport.firstColumn + viewport.visibleColumns
+                ) {
+                    continue;
+                }
+
+                const x =
+                    this.viewport.getRowHeaderWidth() +
+                    (column - viewport.firstColumn) *
+                    this.viewport.getDefaultColumnWidth() -
+                    viewport.columnOffset;
+
+                const y =
+                    this.viewport.getColumnHeaderHeight() +
+                    (row - viewport.firstRow) *
+                    this.viewport.getDefaultRowHeight() -
+                    viewport.rowOffset;
+
+                this.context.fillRect(
+                    x,
+                    y,
+                    this.viewport.getDefaultColumnWidth(),
+                    this.viewport.getDefaultRowHeight()
+                );
+
+            }
+
+        }
+
+        this.drawSelectionBorder(
+            viewport,
+            startRow,
+            startColumn,
+            endRow,
+            endColumn
+        );
+
+    }
+
+        private drawSelectionBorder(
+            viewport: ReturnType<Viewport["getViewport"]>,
+            startRow: number,
+            startColumn: number,
+            endRow: number,
+            endColumn: number
+        ): void {
+
+            const visibleStartRow =
+                Math.max(startRow, viewport.firstRow);
+
+            const visibleEndRow =
+                Math.min(
+                    endRow,
+                    viewport.firstRow +
+                    viewport.visibleRows
+                );
+
+            const visibleStartColumn =
+                Math.max(
+                    startColumn,
+                    viewport.firstColumn
+                );
+
+            const visibleEndColumn =
+                Math.min(
+                    endColumn,
+                    viewport.firstColumn +
+                    viewport.visibleColumns
+                );
+
+            if (
+                visibleStartRow > visibleEndRow ||
+                visibleStartColumn > visibleEndColumn
+            ) {
+                return;
+            }
+
+            const x =
+                this.viewport.getRowHeaderWidth() +
+                (visibleStartColumn - viewport.firstColumn) *
+                this.viewport.getDefaultColumnWidth() -
+                viewport.columnOffset;
+
+            const y =
+                this.viewport.getColumnHeaderHeight() +
+                (visibleStartRow - viewport.firstRow) *
+                this.viewport.getDefaultRowHeight() -
+                viewport.rowOffset;
+
+            const width =
+                (visibleEndColumn - visibleStartColumn + 1) *
+                this.viewport.getDefaultColumnWidth();
+
+            const height =
+                (visibleEndRow - visibleStartRow + 1) *
+                this.viewport.getDefaultRowHeight();
+
+            this.context.strokeStyle = "#107c41";
+
+            this.context.lineWidth = 2;
+
+            this.context.strokeRect(
+                x,
+                y,
+                width,
+                height
+            );
+
+        }
+
+        private drawRowSelection(
+    viewport: ReturnType<Viewport["getViewport"]>
+): void {
+
+    const selection =
+        this.selectionManager.getSelection();
+
+    const startRow =
+        Math.min(
+            selection.startRow,
+            selection.endRow
+        );
+
+    const endRow =
+        Math.max(
+            selection.startRow,
+            selection.endRow
+        );
+
+    this.context.fillStyle =
+        "#e9f5ee";
+
+    for (
+        let row = startRow;
+        row <= endRow;
+        row++
+    ) {
+
+        if (
+            row < viewport.firstRow ||
+            row >
+            viewport.firstRow +
+            viewport.visibleRows
+        ) {
+            continue;
+        }
+
         const y =
             this.viewport.getColumnHeaderHeight() +
             (row - viewport.firstRow) *
             this.viewport.getDefaultRowHeight() -
             viewport.rowOffset;
 
-        this.context.strokeStyle = "#107c41";
+        this.context.fillRect(
 
-        this.context.lineWidth = 2;
+            this.viewport.getRowHeaderWidth(),
 
-        this.context.strokeRect(
-            x,
             y,
-            this.viewport.getDefaultColumnWidth(),
+
+            this.canvas.width,
+
             this.viewport.getDefaultRowHeight()
+
         );
 
+        this.context.fillStyle =
+            "#d0ead7";
+
+        this.context.fillRect(
+
+            0,
+
+            y,
+
+            this.viewport.getRowHeaderWidth(),
+
+            this.viewport.getDefaultRowHeight()
+
+        );
+
+        this.context.fillStyle =
+            "#e9f5ee";
+
     }
+
+}
+
+
+
+
+
 
 }

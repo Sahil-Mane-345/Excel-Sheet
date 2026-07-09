@@ -26,7 +26,7 @@ export class EventManager {
 
     private static readonly AUTO_SCROLL_MARGIN = 20;
 
-private static readonly AUTO_SCROLL_SPEED = 20;
+    private static readonly AUTO_SCROLL_SPEED = 20;
 
 
 
@@ -301,6 +301,7 @@ if (!cell) {
 
     const selection =
     this.selectionManager.getSelection();
+    
 
 if (
     selection.endRow !== cell.row ||
@@ -342,11 +343,11 @@ if (
 
     }
 
-    this.renderer.render();
+    
 
 }
 
-
+this.renderer.render();
 };
 
 

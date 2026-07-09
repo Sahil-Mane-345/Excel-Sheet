@@ -455,6 +455,11 @@ private drawColumnSelection(
         selection.startColumn,
         selection.endColumn
     );
+    const endRow =
+            Math.max(
+                selection.startRow,
+                selection.endRow
+            );
 
     this.context.fillStyle = "#e9f5ee";
 
@@ -485,8 +490,6 @@ private drawColumnSelection(
             this.viewport.getColumnHeaderHeight()
         );
 
-        this.context.fillStyle = "#d0ead7";
-
         this.context.fillRect(
             x,
             0,
@@ -494,9 +497,17 @@ private drawColumnSelection(
             this.viewport.getColumnHeaderHeight()
         );
 
-        this.context.fillStyle = "#e9f5ee";
 
     }
+    
+
+    this.drawSelectionBorder(
+            viewport,
+            0,
+            startColumn,
+            endRow,
+            endColumn
+        );
 
 }
 
@@ -685,6 +696,16 @@ private drawColumnSelection(
             selection.endRow
         );
 
+        const startColumn = Math.min(
+        selection.startColumn,
+        selection.endColumn
+    );
+
+    const endColumn = Math.max(
+        selection.startColumn,
+        selection.endColumn
+    );
+
     this.context.fillStyle =
         "#e9f5ee";
 
@@ -740,6 +761,14 @@ private drawColumnSelection(
             "#e9f5ee";
 
     }
+
+    this.drawSelectionBorder(
+            viewport,
+            startRow,
+            startColumn,
+            endRow,
+            endColumn
+        );
 
 }
 

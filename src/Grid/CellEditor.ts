@@ -39,6 +39,8 @@ export class CellEditor {
             value
         });
 
+        console.log(JSON.stringify(this.exportCells()));
+
     }
 
     public removeCell(
@@ -64,28 +66,71 @@ export class CellEditor {
 
     }
 
-    public loadJson(
-        records: Record<string, unknown>[]
-    ): void {
+    public loadRecords(
+    records: Record<string, unknown>[]
+): void {
 
-        this.clear();
+    this.clear();
 
-        records.forEach((record, row) => {
+    if (records.length === 0) {
+        return;
+    }
 
-            const values = Object.values(record);
+    const headers = new Set<string>();
 
-            values.forEach((value, column) => {
+    for (const record of records) {
 
-                this.setCell(
-                    row,
-                    column,
-                    String(value)
-                );
+        Object.keys(record).forEach((key) => {
 
-            });
+            headers.add(key);
 
         });
 
+    }
+
+    const columns = [...headers];
+
+    // Header row
+    columns.forEach((header, column) => {
+
+        this.setCell(
+            0,
+            column,
+            header
+        );
+
+    });
+
+    // Data rows
+    records.forEach((record, row) => {
+
+        columns.forEach((header, column) => {
+
+            const value = record[header];
+
+            this.setCell(
+                row + 1,
+                column,
+                value == null
+                    ? ""
+                    : String(value)
+            );
+
+        });
+
+    });
+
+}
+
+    public exportCells(): Record<string, Cell>{
+        return Object.fromEntries(this.cells);
+    }
+
+    public importCells(cells: Record<string, Cell>):void{
+        this.clear();
+        for(const [key,value] of Object.entries(cells)){
+            this.cells.set(key, value);
+        }
     }
 
 }

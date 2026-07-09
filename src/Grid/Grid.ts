@@ -4,6 +4,7 @@ import { SelectionManager } from "./SelectionManager";
 import { CellEditor } from "./CellEditor";
 import { EventManager } from "./EventManager";
 
+
 export class Grid {
 
     private renderer: Renderer;
@@ -67,6 +68,20 @@ export class Grid {
 
         this.renderer.render();
 
+    }
+
+    public exportSheet(): string{
+        return JSON.stringify({
+            cells: this.cellEditor.exportCells()
+        });
+    }
+
+    public importSheet(
+        json:string
+    ): void{
+        const sheet = JSON.parse(json);
+        this.cellEditor.loadRecords(sheet);
+        this.renderer.render();
     }
 
 }

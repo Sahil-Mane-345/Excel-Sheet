@@ -1,6 +1,7 @@
 import "./style.css";
 import { Grid } from "./Grid/Grid";
 
+
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 <main>
 
@@ -27,3 +28,9 @@ const canvas = document.getElementById("sheet-canvas") as HTMLCanvasElement;
 const grid = new Grid(canvas);
 
 grid.initialise();
+
+const response = await fetch("/data.json");
+
+const json = await response.text();
+
+grid.importSheet(json);

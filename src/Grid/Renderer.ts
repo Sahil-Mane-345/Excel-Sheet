@@ -143,7 +143,7 @@ export class Renderer {
                     viewport.rowOffset;
 
                 this.context.fillText(
-                    cell.value.substring(0,15),
+                    cell.value.substring(0,12),
                     x + 5,
                     y +
                         this.viewport.getDefaultRowHeight() /

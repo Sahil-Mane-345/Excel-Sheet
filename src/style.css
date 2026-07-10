@@ -39,3 +39,7 @@ main{
     border: 1px solid sandybrown;
     border-radius: 3px;
 }
+
+#cell-input-bar{
+    width: 500px;
+}

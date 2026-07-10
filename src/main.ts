@@ -7,9 +7,16 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 
     <h1>Excel Sheet</h1>
 
-    <div>
-        <label id="cell-input-label"></label>
-        <input id="cell-input-bar" type="text">
+    <div style="display:flex;">
+        <div>
+            <label id="cell-input-label"></label>
+            <input id="cell-input-bar" type="text">
+        </div>
+        <div>
+            <label id="file-input-label">Enter File in Json to be loaded : </label>
+            <input id="file-input" type="file" accept=".json">
+        </div>
+        
     </div>
 
     <div id="sheet-container">
@@ -29,8 +36,3 @@ const grid = new Grid(canvas);
 
 grid.initialise();
 
-const response = await fetch("/data.json");
-
-const json = await response.text();
-
-grid.importSheet(json);

@@ -7,42 +7,43 @@ export class CommandManager {
 
     private redoStack: Command[] = [];
 
-    public execute(command: Command): void {
-
+    public executeCommand(command: Command): void {
         command.execute();
-
         this.undoStack.push(command);
-
-        this.redoStack = [];
-
+        this.redoStack.length = 0;
     }
 
     public undo(): void {
-
-        if (this.undoStack.length === 0) {
+        const command = this.undoStack.pop();
+        if (!command) {
             return;
         }
 
-        const command = this.undoStack.pop()!;
-
         command.undo();
-
         this.redoStack.push(command);
-
     }
 
     public redo(): void {
-
-        if (this.redoStack.length === 0) {
+        const command = this.redoStack.pop();
+        if (!command) {
             return;
         }
 
-        const command = this.redoStack.pop()!;
-
         command.execute();
-
         this.undoStack.push(command);
+    }
 
+    public canUndo(): boolean {
+        return this.undoStack.length > 0;
+    }
+
+    public canRedo(): boolean {
+        return this.redoStack.length > 0;
+    }
+
+    public clear(): void {
+        this.undoStack.length = 0;
+        this.redoStack.length = 0;
     }
 
 }

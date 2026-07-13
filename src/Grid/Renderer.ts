@@ -4,15 +4,18 @@ import { CellEditor } from "./CellEditor";
 import { SelectionManager, SelectionType } from "./SelectionManager";
 import { Viewport } from "./Viewport";
 import { Helpers } from "../Utils/Helpers";
+import type { SelectionStatsManager } from "./SelectionStatsManager";
 
 export class Renderer {
 
     private context: CanvasRenderingContext2D;
+    private readonly statusBarHeight = 24;
 
     constructor(
         private canvas: HTMLCanvasElement,
         private viewport: Viewport,
         private selectionManager: SelectionManager,
+        private selectionStatsManager: SelectionStatsManager,
         private cellEditor: CellEditor
     ) {
 
@@ -51,6 +54,10 @@ export class Renderer {
         this.drawColumnHeaders(viewport);
 
         this.drawCorner();
+
+        if(this.selectionManager.getSelection().type != SelectionType.All){
+            this.drawSelectionStats();
+        }
 
     }
 
@@ -122,7 +129,7 @@ export class Renderer {
 
                 const x = this.getGridX(column);
                 const y = this.getGridY(row);
-
+                
                 this.context.fillText(
                     cell.value.substring(0, 12),
                     x + 5,
@@ -716,5 +723,50 @@ export class Renderer {
             this.viewport.getScrollY()
         );
     }
+
+   
+
+private drawSelectionStats(): void {
+
+    const stats = this.selectionStatsManager.calculate(
+        this.selectionManager.getSelection(),
+        this.cellEditor
+    );
+
+    const y = this.canvas.height - this.statusBarHeight;
+
+    this.context.fillStyle = "#f3f3f3";
+    this.context.fillRect(
+        0,
+        y - 10,
+        this.canvas.width,
+        this.statusBarHeight
+    );
+
+    this.context.strokeStyle = "#d0d0d0";
+    this.context.beginPath();
+    this.context.moveTo(0, y -10);
+    this.context.lineTo(this.canvas.width, y - 10);
+    this.context.stroke();
+
+    this.context.fillStyle = "#333";
+    this.context.font = "13px Arial";
+    this.context.textAlign = "left";
+    this.context.textBaseline = "middle";
+
+    const text =
+        `Count: ${stats.cellCount}    ` +
+        `Sum: ${stats.sum}    ` +
+        `Avg: ${stats.average.toFixed(2)}    ` +
+        `Min: ${stats.min ?? "-"}    ` +
+        `Max: ${stats.max ?? "-"}`;
+
+    this.context.fillText(
+        text,
+        8,
+        (y + this.statusBarHeight / 2) - 10
+    );
+
+}
 
 }

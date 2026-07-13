@@ -3,7 +3,8 @@ import { Viewport } from "./Viewport";
 import { SelectionManager } from "./SelectionManager";
 import { CellEditor } from "./CellEditor";
 import { EventManager } from "./EventManager";
-import { ResizeHandler } from './ResizeHandler';
+import { SelectionStatsManager } from "./SelectionStatsManager";
+
 
 
 
@@ -19,7 +20,7 @@ export class Grid {
 
     private eventManager: EventManager;
 
-    private resizeHandler : ResizeHandler;
+    private selectionStatsManager: SelectionStatsManager;
 
     
 
@@ -28,18 +29,20 @@ export class Grid {
         private canvas: HTMLCanvasElement
     ) {
 
-        this.resizeHandler = new ResizeHandler();
-        this.viewport = new Viewport(this.resizeHandler);
+        this.viewport = new Viewport();
 
         this.selectionManager = new SelectionManager();
 
         this.cellEditor = new CellEditor();
+
+        this.selectionStatsManager = new SelectionStatsManager();
 
 
         this.renderer = new Renderer(
             this.canvas,
             this.viewport,
             this.selectionManager,
+            this.selectionStatsManager,
             this.cellEditor
         );
 

@@ -11,7 +11,7 @@ export class CellEditor {
     ): Cell | undefined {
 
         return this.cells.get(
-            Helpers.getCellKey(row, column)
+            Helpers.getCellKey(row, Helpers.getColumnName(column))
         );
 
     }
@@ -24,7 +24,7 @@ export class CellEditor {
 
         const key = Helpers.getCellKey(
             row,
-            column
+            Helpers.getColumnName(column)
         );
 
         if (value.trim() === "") {
@@ -48,7 +48,7 @@ export class CellEditor {
     ): void {
 
         this.cells.delete(
-            Helpers.getCellKey(row, column)
+            Helpers.getCellKey(row, Helpers.getColumnName(column))
         );
 
     }

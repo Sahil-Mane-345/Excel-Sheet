@@ -1,4 +1,4 @@
-import { ResizeHandler } from './ResizeHandler';
+
 import {
     TOTAL_ROWS,
     TOTAL_COLUMNS,

@@ -24,7 +24,7 @@ export class Helpers {
 
     public static getCellKey(
         row: number,
-        column: number
+        column: string
     ): string {
 
         return `${row}:${column}`;

@@ -1,37 +1,31 @@
-import type { Command } from "./Command";
 
+import { Viewport } from "../Grid/Viewport";
+import type { Command } from "./Command";
 
 export class ResizeCommand implements Command {
 
-    private previousSize: number;
-
     constructor(
-        private getter: (index: number) => number,
-        private setter: (index: number, size: number) => void,
+        private viewport: Viewport,
+        private target: "row" | "column",
         private index: number,
+        private previousSize: number,
         private newSize: number
-    ) {
-
-        this.previousSize = this.getter(this.index);
-
-    }
+    ) { }
 
     public execute(): void {
-
-        this.setter(
-            this.index,
-            this.newSize
-        );
-
+        if (this.target === "row") {
+            this.viewport.setRowHeight(this.index, this.newSize);
+        } else {
+            this.viewport.setColumnWidth(this.index, this.newSize);
+        }
     }
 
     public undo(): void {
-
-        this.setter(
-            this.index,
-            this.previousSize
-        );
-
+        if (this.target === "row") {
+            this.viewport.setRowHeight(this.index, this.previousSize);
+        } else {
+            this.viewport.setColumnWidth(this.index, this.previousSize);
+        }
     }
 
 }

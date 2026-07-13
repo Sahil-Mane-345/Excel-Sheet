@@ -1,11 +1,27 @@
+import { DEFAULT_ROW_HEIGHT } from "../Utils/Constants";
+
 export class Row {
 
     constructor(
 
-        public index: number,
+        private index: number,
 
-        public height: number = 30
+        private height: number = DEFAULT_ROW_HEIGHT
 
     ) {}
 
+    public setHeight(height:number){
+        if(height >= DEFAULT_ROW_HEIGHT){
+            this.height = height;
+        }
+        return;
+    }
+
+    public getHeight(){
+        return this.height;
+    }
+
+    public getIndex(){
+        return this.index;
+    }
 }

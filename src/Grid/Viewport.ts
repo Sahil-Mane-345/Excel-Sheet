@@ -1,3 +1,4 @@
+import { ResizeHandler } from './ResizeHandler';
 import {
     TOTAL_ROWS,
     TOTAL_COLUMNS,
@@ -12,6 +13,10 @@ export class Viewport {
     private scrollX = 0;
 
     private scrollY = 0;
+
+    constructor( private resizeHandler:ResizeHandler){
+
+    }
 
     public setScroll(
         scrollX: number,
@@ -75,6 +80,27 @@ export class Viewport {
         canvasWidth: number,
         canvasHeight: number
     ) {
+
+        // let height = 0;
+        let width = 0;
+
+        // for(var i = 0; i < TOTAL_ROWS; i++){
+        //     if(height < this.scrollY){
+        //         height += this.resizeHandler.getRowHeight(i);
+        //     }
+        // }
+        for(var j = 0; j < TOTAL_COLUMNS; j++){
+            if(width >= this.scrollX){
+                break;
+            }
+            width += this.resizeHandler.getColumnWidth(j);
+        }
+        
+        // console.log("height : " + height + " i : " + i  +" scrollY : " + this.scrollY );
+
+        console.log("width : " + width + " j : " + j+" scrollX : " + this.scrollX );
+
+
 
         const firstRow =
             Math.floor(

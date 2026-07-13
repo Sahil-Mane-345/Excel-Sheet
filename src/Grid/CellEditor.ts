@@ -39,7 +39,6 @@ export class CellEditor {
             value
         });
 
-        console.log(JSON.stringify(this.exportCells()));
 
     }
 

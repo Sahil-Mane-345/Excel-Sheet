@@ -3,6 +3,7 @@ import { Viewport } from "./Viewport";
 import { SelectionManager } from "./SelectionManager";
 import { CellEditor } from "./CellEditor";
 import { EventManager } from "./EventManager";
+import { ResizeHandler } from './ResizeHandler';
 
 
 export class Grid {
@@ -17,15 +18,22 @@ export class Grid {
 
     private eventManager: EventManager;
 
+    private resizeHandler : ResizeHandler;
+
+    
+
+
     constructor(
         private canvas: HTMLCanvasElement
     ) {
 
-        this.viewport = new Viewport();
+        this.resizeHandler = new ResizeHandler();
+        this.viewport = new Viewport(this.resizeHandler);
 
         this.selectionManager = new SelectionManager();
 
         this.cellEditor = new CellEditor();
+
 
         this.renderer = new Renderer(
             this.canvas,
@@ -83,5 +91,6 @@ export class Grid {
         this.cellEditor.loadRecords(sheet);
         this.renderer.render();
     }
+
 
 }

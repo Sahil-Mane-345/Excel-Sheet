@@ -93,7 +93,7 @@ The project is divided into independent modules.
 
 ## Screenshots
 
-![Class Diagram](public\class.drawio.png)
+![Class Diagram](https://i.postimg.cc/8zHcHkSz/class-drawio.png)
 
 
 

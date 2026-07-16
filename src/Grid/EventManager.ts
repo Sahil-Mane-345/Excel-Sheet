@@ -115,9 +115,9 @@ export class EventManager {
     }
 
     private registerMouseEvents(): void {
-        this.canvas.addEventListener("mousedown", this.handleMouseDown);
-        window.addEventListener("mousemove", this.handleMouseMove);
-        window.addEventListener("mouseup", this.handleMouseUp);
+        this.canvas.addEventListener("pointerdown", this.handleMouseDown);
+        window.addEventListener("pointermove", this.handleMouseMove);
+        window.addEventListener("pointerup", this.handleMouseUp);
     }
 
     private registerKeyboardEvents(): void {

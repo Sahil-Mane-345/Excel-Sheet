@@ -1,7 +1,7 @@
 // src/Grid/Renderer.ts
 
 import { CellEditor } from "./CellEditor";
-import { SelectionManager, SelectionType } from "./SelectionManager";
+import { Selection, SelectionManager, SelectionType } from './SelectionManager';
 import { Viewport } from "./Viewport";
 import { Helpers } from "../Utils/Helpers";
 import type { SelectionStatsManager } from "./SelectionStatsManager";
@@ -145,6 +145,7 @@ export class Renderer {
     private drawRowHeaders(
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
+        let selection = this.selectionManager.getSelection();
 
         for (
             let row = viewport.firstRow;
@@ -156,6 +157,11 @@ export class Renderer {
             const rowHeight = this.viewport.getRowHeight(row);
 
             this.context.fillStyle = "#f3f3f3";
+            if(selection.type == SelectionType.Row){
+                if(row >= selection.startRow  && row <= selection.endRow){
+                    this.context.fillStyle = "#d0ead7";
+                }
+            }
             this.context.fillRect(0, y, this.viewport.getRowHeaderWidth(), rowHeight);
 
             this.context.strokeStyle = "#d0d0d0";
@@ -180,6 +186,7 @@ export class Renderer {
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
 
+        let selection = this.selectionManager.getSelection();
         for (
             let column = viewport.firstColumn;
             column < viewport.firstColumn + viewport.visibleColumns;
@@ -190,6 +197,12 @@ export class Renderer {
             const width = this.viewport.getColumnWidth(column);
 
             this.context.fillStyle = "#f3f3f3";
+            if(selection.type == SelectionType.Column){
+                if(column >= selection.startColumn  && column <= selection.endColumn){
+                    this.context.fillStyle = "#d0ead7";
+                }
+            }
+            
             this.context.fillRect(x, 0, width, this.viewport.getColumnHeaderHeight());
 
             this.context.strokeStyle = "#d0d0d0";
@@ -726,7 +739,7 @@ export class Renderer {
 
    
 
-private drawSelectionStats(): void {
+    private drawSelectionStats(): void {
 
     const stats = this.selectionStatsManager.calculate(
         this.selectionManager.getSelection(),

@@ -91,6 +91,12 @@ src/
 
 The project is divided into independent modules.
 
+## Screenshots
+
+![App Screenshot](src\assets\class.drawio.png)
+
+
+
 ## Renderer
 
 Responsible for drawing:

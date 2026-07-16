@@ -93,7 +93,7 @@ The project is divided into independent modules.
 
 ## Screenshots
 
-![App Screenshot](src\assets\class.drawio.png)
+![Class Diagram](public\class.drawio.png)
 
 
 

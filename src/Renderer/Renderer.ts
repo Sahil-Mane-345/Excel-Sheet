@@ -1,5 +1,3 @@
-// src/Grid/Renderer.ts
-
 import type { CellEditor } from "../Grid/CellEditor";
 import { SelectionType, type SelectionManager } from "../Grid/SelectionManager";
 import type { SelectionStatsManager } from "../Grid/SelectionStatsManager";
@@ -10,11 +8,6 @@ import { HeaderDrawer } from "./HeaderDrawer";
 import { SelectionDrawer } from "./SelectionDrawer";
 import { StatusBarDrawer } from "./StatusBarDrawer";
 
-
-/**
- * Coordinator only: clears the canvas each frame and delegates the
- * actual drawing to the specialised drawers below.
- */
 export class Renderer {
 
     private context: CanvasRenderingContext2D;

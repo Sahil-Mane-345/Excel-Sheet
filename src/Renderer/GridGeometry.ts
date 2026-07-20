@@ -1,13 +1,6 @@
-// src/Grid/Utils/GridGeometry.ts
-
 import type { Viewport } from "../Grid/Viewport";
 
 
-/**
- * Converts row/column indices into on-screen pixel coordinates
- * (accounting for headers + scroll offset). Shared by every drawer
- * so the math lives in exactly one place.
- */
 export class GridGeometry {
 
     constructor(

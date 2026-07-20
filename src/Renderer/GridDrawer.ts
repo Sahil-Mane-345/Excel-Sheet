@@ -1,30 +1,14 @@
-// src/Grid/Rendering/GridDrawer.ts
-
 import type { CellEditor } from "../Grid/CellEditor";
 import type { Viewport } from "../Grid/Viewport";
 import type { GridGeometry } from "./GridGeometry";
 
-
-
-/**
- * Default text styling applied when a cell doesn't specify its own
- * font family / size.
- */
 const DEFAULT_FONT_FAMILY = "Arial";
 
 const DEFAULT_FONT_SIZE = 14;
 
-/**
- * Left/right padding (in px) kept clear inside the cell before text
- * starts, so glyphs don't butt right up against the grid line.
- */
 const TEXT_PADDING_X = 5;
 
-/**
- * Draws per-cell backgrounds, the plain grid lines, and the text
- * content of each visible cell (clipped to the cell's bounds so an
- * oversized font can't spill into neighbouring cells).
- */
+
 export class GridDrawer {
 
     constructor(
@@ -34,11 +18,6 @@ export class GridDrawer {
         private geometry: GridGeometry
     ) { }
 
-    /**
-     * Fills each visible cell's custom background colour, if it has
-     * one. Must run *before* drawGrid so the grid lines are painted
-     * on top of the fill rather than being covered by it.
-     */
     public drawCellBackgrounds(
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
@@ -158,9 +137,6 @@ export class GridDrawer {
                 this.context.font = `${fontSize}px ${fontFamily}`;
                 this.context.fillStyle = "black";
 
-                // Clip to the cell's own rect so a larger font size
-                // (or a long value) can never paint over neighbouring
-                // cells, rows, or headers.
                 this.context.save();
 
                 this.context.beginPath();

@@ -1,15 +1,8 @@
-// src/Grid/Rendering/HeaderDrawer.ts
-
 import { SelectionType, type SelectionManager } from "../Grid/SelectionManager";
 import type { Viewport } from "../Grid/Viewport";
 import { Helpers } from "../Utils/Helpers";
 import type { GridGeometry } from "./GridGeometry";
 
-
-/**
- * Draws the row header column, the column header row, and the
- * top-left corner box (including their selection highlighting).
- */
 export class HeaderDrawer {
 
     constructor(

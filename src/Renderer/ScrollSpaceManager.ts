@@ -1,15 +1,6 @@
-// src/Grid/Utils/ScrollSpaceManager.ts
-
 import type { Viewport } from "../Grid/Viewport";
 import type { Renderer } from "./Renderer";
 
-
-
-/**
- * Owns the scroll container / scroll-space DOM elements: keeps the
- * spacer sized to the full sheet dimensions, and forwards native
- * scroll events into the Viewport.
- */
 export class ScrollSpaceManager {
 
     private scrollContainer: HTMLDivElement;

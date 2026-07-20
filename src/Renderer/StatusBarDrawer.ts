@@ -1,14 +1,7 @@
-// src/Grid/Rendering/StatusBarDrawer.ts
-
 import type { CellEditor } from "../Grid/CellEditor";
 import type { SelectionManager } from "../Grid/SelectionManager";
 import type { SelectionStatsManager } from "../Grid/SelectionStatsManager";
 
-
-/**
- * Draws the status bar showing count/sum/average/min/max for the
- * current selection.
- */
 export class StatusBarDrawer {
 
     private readonly statusBarHeight = 24;

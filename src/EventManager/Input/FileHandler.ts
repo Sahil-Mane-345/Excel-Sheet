@@ -58,12 +58,6 @@ export class FileHandler {
 
     }
 
-    public exportSheet(): string {
-        return JSON.stringify({
-            cells: this.cellEditor.exportCells()
-        });
-    }
-
     public importSheet(json: string): void {
         const sheet = JSON.parse(json);
         this.cellEditor.loadRecords(sheet);

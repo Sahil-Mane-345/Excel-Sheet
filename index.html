@@ -7,7 +7,31 @@
     <title>package.json</title>
   </head>
   <body>
-    <div id="app"></div>
+      <main>
+
+      <h3>Excel Sheet</h3>
+
+      <div style="display:flex;">
+          <div>
+              <label id="cell-input-label"></label>
+              <input id="cell-input-bar" type="text">
+          </div>
+          <div>
+              <label id="file-input-label">Enter File in Json to be loaded : </label>
+              <input id="file-input" type="file" accept=".json">
+          </div>
+          
+      </div>
+
+      <div id="sheet-container">
+
+          <canvas id="sheet-canvas"></canvas>
+
+          <div id="scroll-space"></div>
+
+      </div>
+
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

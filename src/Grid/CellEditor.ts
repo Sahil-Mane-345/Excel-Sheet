@@ -121,10 +121,6 @@ export class CellEditor {
 
 }
 
-    public exportCells(): Record<string, Cell>{
-        return Object.fromEntries(this.cells);
-    }
-
     public importCells(cells: Record<string, Cell>):void{
         this.clear();
         for(const [key,value] of Object.entries(cells)){

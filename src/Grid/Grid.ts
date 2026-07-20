@@ -1,9 +1,11 @@
-import { Renderer } from "./Renderer";
+
 import { Viewport } from "./Viewport";
 import { SelectionManager } from "./SelectionManager";
 import { CellEditor } from "./CellEditor";
-import { EventManager } from "./EventManager";
+
 import { SelectionStatsManager } from "./SelectionStatsManager";
+import { Renderer } from "../Renderer/Renderer";
+import { EventManager } from "../EventManager/EventManager";
 
 
 

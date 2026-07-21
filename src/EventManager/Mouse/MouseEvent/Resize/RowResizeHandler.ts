@@ -32,12 +32,12 @@ export class RowResizeHandler extends BasePointerHandler{
 
     public onPointerMove(context: PointerContext): void {
         const deltaY = context.event.clientY - this.startY;
-
+        
         this.viewport.setRowHeight(this.resizeIndex, this.startHeight + deltaY);
 
         this.scrollspaceManager.sync();
 
-        this.renderer.render;
+        this.renderer.render();
     }
 
     public onPointerUp(context: PointerContext): void {

@@ -46,7 +46,7 @@ export class SelectionDrawer {
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
 
-        this.context.fillStyle = "#e9f5ee48";
+        this.context.fillStyle = "#d4fddf";
 
         for (
             let row = viewport.firstRow;
@@ -75,7 +75,7 @@ export class SelectionDrawer {
             const y = this.geometry.getGridY(row);
             const rowHeight = this.viewport.getRowHeight(row);
 
-            this.context.fillStyle = "#d0ead7";
+            this.context.fillStyle = "##d4fddf";
 
             this.context.fillRect(
                 0,
@@ -84,7 +84,7 @@ export class SelectionDrawer {
                 rowHeight
             );
 
-            this.context.fillStyle = "#e9f5ee";
+            this.context.fillStyle = "##d4fddf";
 
         }
 
@@ -97,7 +97,7 @@ export class SelectionDrawer {
             const x = this.geometry.getGridX(column);
             const width = this.viewport.getColumnWidth(column);
 
-            this.context.fillStyle = "#d0ead7";
+            this.context.fillStyle = "##d4fddf";
 
             this.context.fillRect(
                 x,

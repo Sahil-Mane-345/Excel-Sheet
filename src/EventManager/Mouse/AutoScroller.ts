@@ -1,79 +1,119 @@
+import type { Renderer } from "../../Renderer/Renderer";
+
 export class AutoScroller {
 
     private static readonly AUTO_SCROLL_MARGIN = 20;
 
-    private static readonly AUTO_SCROLL_SPEED = 20;
+    private static readonly AUTO_SCROLL_SPEED = 10;
+
+    private animationId?: number;
+
+    private pointerEvent?: PointerEvent;
+
+    private onFrame?: (event: PointerEvent) => void;
 
     constructor(
         private canvas: HTMLCanvasElement,
-        private scrollContainer: HTMLDivElement
+        private scrollContainer: HTMLDivElement,
+        private renderer: Renderer
     ) { }
 
-    public autoScroll(
-        event: MouseEvent
+    public startAutoScroll(
+        event: PointerEvent,
+        onFrame: (event: PointerEvent) => void
     ): void {
 
-        const rect =
-            this.canvas.getBoundingClientRect();
+        this.pointerEvent = event;
+        this.onFrame = onFrame;
 
-        let scrollX =
-            this.scrollContainer.scrollLeft;
-
-        let scrollY =
-            this.scrollContainer.scrollTop;
-
-        if (
-            event.clientY <
-            rect.top +
-            AutoScroller.AUTO_SCROLL_MARGIN
-        ) {
-
-            scrollY -=
-                AutoScroller.AUTO_SCROLL_SPEED;
-
+        if (this.animationId) {
+            return;
         }
 
-        if (
-            event.clientY >
-            rect.bottom -
-            AutoScroller.AUTO_SCROLL_MARGIN
-        ) {
+        const animate = () => {
 
-            scrollY +=
-                AutoScroller.AUTO_SCROLL_SPEED;
+            if (!this.pointerEvent) {
+                return;
+            }
 
-        }
+            const rect =
+                this.canvas.getBoundingClientRect();
 
-        if (
-            event.clientX <
-            rect.left +
-            AutoScroller.AUTO_SCROLL_MARGIN
-        ) {
+            let scrollX =
+                this.scrollContainer.scrollLeft;
 
-            scrollX -=
-                AutoScroller.AUTO_SCROLL_SPEED;
+            let scrollY =
+                this.scrollContainer.scrollTop;
 
-        }
+            let shouldScroll = false;
 
-        if (
-            event.clientX >
-            rect.right -
-            AutoScroller.AUTO_SCROLL_MARGIN
-        ) {
+            if (
+                this.pointerEvent.clientY <
+                rect.top + AutoScroller.AUTO_SCROLL_MARGIN
+            ) {
+                scrollY -= AutoScroller.AUTO_SCROLL_SPEED;
+                shouldScroll = true;
+            }
 
-            scrollX +=
-                AutoScroller.AUTO_SCROLL_SPEED;
+            if (
+                this.pointerEvent.clientY >
+                rect.bottom - AutoScroller.AUTO_SCROLL_MARGIN
+            ) {
+                scrollY += AutoScroller.AUTO_SCROLL_SPEED;
+                shouldScroll = true;
+            }
 
-        }
+            if (
+                this.pointerEvent.clientX <
+                rect.left + AutoScroller.AUTO_SCROLL_MARGIN
+            ) {
+                scrollX -= AutoScroller.AUTO_SCROLL_SPEED;
+                shouldScroll = true;
+            }
 
-        this.scrollContainer.scrollTo({
+            if (
+                this.pointerEvent.clientX >
+                rect.right - AutoScroller.AUTO_SCROLL_MARGIN
+            ) {
+                scrollX += AutoScroller.AUTO_SCROLL_SPEED;
+                shouldScroll = true;
+            }
 
-            left: Math.max(0, scrollX),
+            if (shouldScroll) {
 
-            top: Math.max(0, scrollY)
+                this.scrollContainer.scrollTo({
+                    left: Math.max(0, scrollX),
+                    top: Math.max(0, scrollY)
+                });
 
-        });
+                this.onFrame?.(this.pointerEvent);
 
+                this.renderer.render();
+            }
+
+            this.animationId =
+                requestAnimationFrame(animate);
+        };
+
+        this.animationId =
+            requestAnimationFrame(animate);
     }
 
+    public updatePointer(
+        event: PointerEvent
+    ): void {
+
+        this.pointerEvent = event;
+    }
+
+    public stopAutoScroll(): void {
+
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+
+        this.animationId = undefined;
+        this.pointerEvent = undefined;
+        this.onFrame = undefined;
+    }
 }

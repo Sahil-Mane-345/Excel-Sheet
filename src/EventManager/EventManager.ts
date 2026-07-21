@@ -3,7 +3,6 @@ import { CursorHandler } from "./Mouse/CursorHandler";
 import { AutoScroller } from "./Mouse/AutoScroller";
 import { ResizeHandler } from "./Mouse/ResizeHandler";
 import { SelectionHandler } from "./Mouse/SelectionHandler";
-import { MouseEventHandler } from "./Mouse/MouseEventHandler";
 import { KeyboardHandler } from "./Keyboard/KeyboardHandler";
 import { InputBarHandler } from "./Input/InputBarHandler";
 import { FileHandler } from "./Input/FileHandler";
@@ -13,6 +12,8 @@ import type { Renderer } from "../Renderer/Renderer";
 import type { Viewport } from "../Grid/Viewport";
 import type { SelectionManager } from "../Grid/SelectionManager";
 import type { CellEditor } from "../Grid/CellEditor";
+import { PointerEventHandler } from './Mouse/MouseEvent/PointerEventHandler';
+import { PointerContextFactory } from './Mouse/MouseEvent/PointerContextFactory';
 
 export class EventManager {
 
@@ -26,7 +27,7 @@ export class EventManager {
 
     private hitTester: MouseHitTester;
 
-    private cursorHandler: CursorHandler;
+     private cursorHandler: CursorHandler;
 
     private autoScroller: AutoScroller;
 
@@ -34,7 +35,7 @@ export class EventManager {
 
     private selectionHandler: SelectionHandler;
 
-    private mouseEventHandler: MouseEventHandler;
+    private pointerEventHandler :PointerEventHandler;
 
     private keyboardHandler: KeyboardHandler;
 
@@ -77,7 +78,8 @@ export class EventManager {
 
         this.autoScroller = new AutoScroller(
             this.canvas,
-            this.scrollSpaceManager.getScrollContainer()
+            this.scrollSpaceManager.getScrollContainer(),
+            this.renderer
         );
 
         this.resizeHandler = new ResizeHandler(
@@ -96,15 +98,32 @@ export class EventManager {
             // this.styleHandler
         );
 
-        this.mouseEventHandler = new MouseEventHandler(
+        const pointerContextFactory = new PointerContextFactory(this.hitTester);
+
+        this.pointerEventHandler = new PointerEventHandler(
             this.canvas,
-            this.hitTester,
-            this.resizeHandler,
-            this.selectionHandler,
+            pointerContextFactory,
+            this.inputBarHandler,
+            this.viewport,
+            this.renderer,
             this.cursorHandler,
-            this.autoScroller,
-            this.inputBarHandler
-        );
+            this.undoRedoHandler,
+            this.scrollSpaceManager,
+            this.selectionManager,
+            this.autoScroller
+        )
+
+        // this.mouseEventHandler = new MouseEventHandler(
+        //     this.canvas,
+        //     this.hitTester,
+        //     this.resizeHandler,
+        //     this.selectionHandler,
+        //     this.cursorHandler,
+        //     this.autoScroller,
+        //     this.inputBarHandler
+        // );
+
+
 
         this.keyboardHandler = new KeyboardHandler(
             this.renderer,
@@ -118,7 +137,9 @@ export class EventManager {
 
         this.scrollSpaceManager.register();
 
-        this.mouseEventHandler.register();
+        // this.mouseEventHandler.register();
+
+        this.pointerEventHandler.register();
 
         this.keyboardHandler.register();
 

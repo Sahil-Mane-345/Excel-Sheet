@@ -12,6 +12,8 @@ import type { SelectionManager } from "../Grid/SelectionManager";
 import type { CellEditor } from "../Grid/CellEditor";
 import { PointerEventHandler } from './Mouse/MouseEvent/PointerEventHandler';
 import { PointerContextFactory } from './Mouse/MouseEvent/PointerContextFactory';
+import { InputColorSelector } from "./Input/InputColorSelector";
+
 
 export class EventManager {
 
@@ -32,6 +34,8 @@ export class EventManager {
     private pointerEventHandler :PointerEventHandler;
 
     private keyboardHandler: KeyboardHandler;
+
+    private inputColorSelector: InputColorSelector;
 
     constructor(
         private canvas: HTMLCanvasElement,
@@ -109,6 +113,12 @@ export class EventManager {
             this.inputBarHandler
         );
 
+        this.inputColorSelector = new InputColorSelector(
+            this.renderer,
+            this.cellEditor,
+            this.selectionManager
+        );
+
     }
 
     public initialise(): void {
@@ -124,6 +134,8 @@ export class EventManager {
         this.inputBarHandler.register();
 
         this.fileHandler.register();
+
+        this.inputColorSelector.initialise();
 
         this.scrollSpaceManager.sync();
 

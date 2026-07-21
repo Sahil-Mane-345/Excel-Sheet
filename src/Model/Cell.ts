@@ -1,5 +1,5 @@
 export interface Cell{
-    value:string;
+    value?:string;
     backgroundColor?:string;
     fontFamily?:string;
     fontSize?:string;

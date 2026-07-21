@@ -46,7 +46,7 @@ export class SelectionDrawer {
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
 
-        this.context.fillStyle = "#e9f5ee";
+        this.context.fillStyle = "#e9f5ee48";
 
         for (
             let row = viewport.firstRow;
@@ -265,7 +265,7 @@ export class SelectionDrawer {
 
     }
 
-    private drawSelectionBorder(
+    public drawSelectionBorder(
         viewport: ReturnType<Viewport["getViewport"]>,
         startRow: number,
         startColumn: number,

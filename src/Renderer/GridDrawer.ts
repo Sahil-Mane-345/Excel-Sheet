@@ -144,7 +144,7 @@ export class GridDrawer {
                 this.context.clip();
 
                 this.context.fillText(
-                    cell.value,
+                    cell.value ?? "",
                     x + TEXT_PADDING_X,
                     y + height / 2
                 );

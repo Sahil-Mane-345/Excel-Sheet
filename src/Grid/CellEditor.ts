@@ -1,6 +1,7 @@
 import type { Cell } from "../Model/Cell";
 import { Helpers } from "../Utils/Helpers";
 
+
 export class CellEditor {
 
     private cells = new Map<string, Cell>();
@@ -51,6 +52,22 @@ export class CellEditor {
             Helpers.getCellKey(row, Helpers.getColumnName(column))
         );
 
+    }
+
+    public setColor(
+        row: number,
+        column: number,
+        value: string
+    ){
+        const cell = this.getCell(row, column);
+        const key = Helpers.getCellKey(row, Helpers.getColumnName(column))
+
+        if(!cell){
+
+            this.cells.set(key, {value: "", backgroundColor: value});
+        }
+
+        this.cells.set(key, {...cell, backgroundColor: value});
     }
 
     public clear(): void {

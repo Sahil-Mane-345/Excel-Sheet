@@ -1,8 +1,6 @@
 import { MouseHitTester } from "./Mouse/MouseHitTester";
 import { CursorHandler } from "./Mouse/CursorHandler";
 import { AutoScroller } from "./Mouse/AutoScroller";
-import { ResizeHandler } from "./Mouse/ResizeHandler";
-import { SelectionHandler } from "./Mouse/SelectionHandler";
 import { KeyboardHandler } from "./Keyboard/KeyboardHandler";
 import { InputBarHandler } from "./Input/InputBarHandler";
 import { FileHandler } from "./Input/FileHandler";
@@ -30,10 +28,6 @@ export class EventManager {
      private cursorHandler: CursorHandler;
 
     private autoScroller: AutoScroller;
-
-    private resizeHandler: ResizeHandler;
-
-    private selectionHandler: SelectionHandler;
 
     private pointerEventHandler :PointerEventHandler;
 
@@ -80,22 +74,6 @@ export class EventManager {
             this.canvas,
             this.scrollSpaceManager.getScrollContainer(),
             this.renderer
-        );
-
-        this.resizeHandler = new ResizeHandler(
-            this.viewport,
-            this.renderer,
-            this.undoRedoHandler,
-            this.scrollSpaceManager
-        );
-
-        this.selectionHandler = new SelectionHandler(
-            this.viewport,
-            this.renderer,
-            this.selectionManager,
-            this.hitTester,
-            this.inputBarHandler,
-            // this.styleHandler
         );
 
         const pointerContextFactory = new PointerContextFactory(this.hitTester);

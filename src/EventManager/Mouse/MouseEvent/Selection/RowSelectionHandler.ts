@@ -17,7 +17,6 @@ export class RowSelectionHandler extends BasePointerHandler {
     }
 
     public canHandle(context: PointerContext): boolean {
-        console.log("Row Selection Got Called");
         return context.cell.isRowHeader && !context.cell.isColumnHeader;
     }
     public onPointerDown(context: PointerContext): void {

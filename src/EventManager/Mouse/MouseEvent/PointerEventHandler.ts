@@ -10,7 +10,6 @@ import { RowResizeHandler } from "./Resize/RowResizeHandler";
 import { CellSelectionHandler } from "./Selection/CellSelectionHandler";
 import { ColumnSelectionHandler } from "./Selection/ColumnSelectionHandler";
 import { RowSelectionHandler } from "./Selection/RowSelectionHandler";
-import { SelectAllHandler } from "./Selection/SelectAllHandler";
 import { ScrollSpaceManager } from '../../../Renderer/ScrollSpaceManager';
 import type { CursorHandler } from "../CursorHandler";
 import type { AutoScroller } from '../AutoScroller';
@@ -36,12 +35,11 @@ export class PointerEventHandler {
         const rowResize = new RowResizeHandler(this.viewport, this.renderer, this.undoRedoHandler, this.scrollSpaceManager);
         const columnResize = new ColumnResizeHandler(this.viewport, this.renderer, this.undoRedoHandler, this.scrollSpaceManager);
 
-        const cellSelection = new CellSelectionHandler(this.inputBarHandler, this.renderer, this.selectionManager, this.autoScroller);
+        const cellSelection = new CellSelectionHandler(this.inputBarHandler, this.renderer, this.viewport ,this.selectionManager, this.autoScroller);
         const rowSelection = new RowSelectionHandler(this.viewport, this.renderer, this.selectionManager);
         const columnSelection = new ColumnSelectionHandler(this.viewport, this.renderer, this.selectionManager);
-        const allSelection = new SelectAllHandler(this.viewport, this.renderer, this.selectionManager);
 
-        rowResize.setNext(columnResize).setNext(allSelection).setNext(rowSelection).setNext(columnSelection).setNext(cellSelection);
+        rowResize.setNext(columnResize).setNext(cellSelection).setNext(rowSelection).setNext(columnSelection);
         this.dispatcher = new PointerDispatcher(rowResize);
         
     }

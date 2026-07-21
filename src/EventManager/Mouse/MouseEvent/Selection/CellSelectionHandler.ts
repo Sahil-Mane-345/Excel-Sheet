@@ -4,6 +4,7 @@ import { BasePointerHandler } from "../BasePointerHandler";
 import type { PointerContext } from "../PointerContext";
 import { InputBarHandler } from '../../../Input/InputBarHandler';
 import type { AutoScroller } from "../../AutoScroller";
+import { Viewport } from '../../../../Grid/Viewport';
 
 export class CellSelectionHandler extends BasePointerHandler {
 
@@ -16,6 +17,7 @@ export class CellSelectionHandler extends BasePointerHandler {
     constructor(
         private inputBarHandler: InputBarHandler,
         private renderer: Renderer,
+        private viewport: Viewport,
         private selectionManager: SelectionManager,
         private autoScroller: AutoScroller
     ){
@@ -23,11 +25,15 @@ export class CellSelectionHandler extends BasePointerHandler {
     }
 
     public canHandle(context: PointerContext): boolean {
-        console.log("Cell Selection Got Called");
-        return !context.cell.isRowHeader && !context.cell.isColumnHeader;
+        return (!context.cell.isRowHeader && !context.cell.isColumnHeader) || context.cell.isCorner;
     }
 
     public onPointerDown(context: PointerContext): void {
+        if(context.cell.isCorner){
+            this.selectionManager.selectAll(this.viewport.getTotalRows(), this.viewport.getTotalColumns());
+            this.renderer.render();
+            return;
+        }
         this.startRow = context.cell.row;
         this.startColumn = context.cell.column;
         this.hasMoved = false;
@@ -52,6 +58,9 @@ export class CellSelectionHandler extends BasePointerHandler {
     }
 
     public onPointerMove(context: PointerContext): void {
+        if(context.cell.isCorner){
+            return;
+        }
         this.hasMoved = true;
 
         this.selectionManager.selectRange(
@@ -67,6 +76,9 @@ export class CellSelectionHandler extends BasePointerHandler {
     }
 
     public onPointerUp(context: PointerContext): void {
+        if(context.cell.isCorner){
+            return;
+        }
         if(!this.hasMoved){
             this.selectionManager.selectCell(
                 context.cell.row,

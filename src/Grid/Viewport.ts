@@ -311,6 +311,8 @@ export class Viewport {
             column++;
 
         }
+        visibleColumns += 4;
+        visibleRows += 4;
 
         return {
 

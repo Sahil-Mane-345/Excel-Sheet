@@ -43,3 +43,7 @@ main{
 #cell-input-bar{
     width: 500px;
 }
+
+.hidden{
+    display: none;
+}

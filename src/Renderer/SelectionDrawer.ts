@@ -19,6 +19,9 @@ export class SelectionDrawer {
         const selection =
             this.selectionManager.getSelection();
 
+        this.context.globalAlpha = 0.3;
+
+
         switch (selection.type) {
 
             case SelectionType.Cell:
@@ -39,6 +42,8 @@ export class SelectionDrawer {
                 break;
 
         }
+
+        this.context.globalAlpha = 1;
 
     }
 
@@ -273,6 +278,7 @@ export class SelectionDrawer {
         endColumn: number,
         selectionType: SelectionType
     ): void {
+        this.context.globalAlpha = 1;
 
         let visibleStartRow = Math.max(startRow, viewport.firstRow);
         let visibleEndRow = Math.min(

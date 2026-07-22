@@ -4,7 +4,7 @@ export class AutoScroller {
 
     private static readonly AUTO_SCROLL_MARGIN = 20;
 
-    private static readonly AUTO_SCROLL_SPEED = 10;
+    private static readonly AUTO_SCROLL_SPEED = 3;
 
     private animationId?: number;
 

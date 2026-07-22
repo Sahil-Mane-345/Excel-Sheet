@@ -86,9 +86,10 @@ export class Renderer {
             this.canvas.height
         );
 
-        this.selectionDrawer.drawSelection(viewport);
-
+        
         this.gridDrawer.drawCellBackgrounds(viewport);
+        
+        this.selectionDrawer.drawSelection(viewport);
 
         this.gridDrawer.drawGrid(viewport);
 

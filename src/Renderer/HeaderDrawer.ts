@@ -1,4 +1,4 @@
-import { SelectionType, type SelectionManager } from "../Grid/SelectionManager";
+import { type SelectionManager } from "../Grid/SelectionManager";
 import type { Viewport } from "../Grid/Viewport";
 import { Helpers } from "../Utils/Helpers";
 import type { GridGeometry } from "./GridGeometry";
@@ -16,6 +16,8 @@ export class HeaderDrawer {
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
         let selection = this.selectionManager.getSelection();
+        const firstRow = Math.min(selection.startRow, selection.endRow);
+        const lastRow = Math.max(selection.startRow, selection.endRow)
 
         for (
             let row = viewport.firstRow;
@@ -27,11 +29,11 @@ export class HeaderDrawer {
             const rowHeight = this.viewport.getRowHeight(row);
 
             this.context.fillStyle = "#f3f3f3";
-            if (selection.type == SelectionType.Row) {
-                if (row >= selection.startRow && row <= selection.endRow) {
+            
+                if (row >= firstRow && row <= lastRow) {
                     this.context.fillStyle = "#d0ead7";
                 }
-            }
+            
             this.context.fillRect(0, y, this.viewport.getRowHeaderWidth(), rowHeight);
 
             this.context.strokeStyle = "#d0d0d0";
@@ -55,8 +57,10 @@ export class HeaderDrawer {
     public drawColumnHeaders(
         viewport: ReturnType<Viewport["getViewport"]>
     ): void {
-
         let selection = this.selectionManager.getSelection();
+        const firstCol = Math.min(selection.startColumn, selection.endColumn);
+        const endCol = Math.max(selection.startColumn, selection.endColumn);
+        
         for (
             let column = viewport.firstColumn;
             column < viewport.firstColumn + viewport.visibleColumns;
@@ -67,11 +71,10 @@ export class HeaderDrawer {
             const width = this.viewport.getColumnWidth(column);
 
             this.context.fillStyle = "#f3f3f3";
-            if (selection.type == SelectionType.Column) {
-                if (column >= selection.startColumn && column <= selection.endColumn) {
+            
+                if (column >= firstCol  && column <= endCol) {
                     this.context.fillStyle = "#d0ead7";
                 }
-            }
 
             this.context.fillRect(x, 0, width, this.viewport.getColumnHeaderHeight());
 

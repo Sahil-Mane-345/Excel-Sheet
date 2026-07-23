@@ -110,6 +110,8 @@ export class EventManager {
         this.keyboardHandler = new KeyboardHandler(
             this.renderer,
             this.undoRedoHandler,
+            // this.scrollSpaceManager,
+            this.selectionManager,
             this.inputBarHandler
         );
 

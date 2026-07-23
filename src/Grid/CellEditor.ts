@@ -28,6 +28,8 @@ export class CellEditor {
             Helpers.getColumnName(column)
         );
 
+        const cell = this.cells.get(key);
+
         if (value.trim() === "") {
 
             this.cells.delete(key);
@@ -37,7 +39,7 @@ export class CellEditor {
         }
 
         this.cells.set(key, {
-            value
+            ...cell, value
         });
 
 
